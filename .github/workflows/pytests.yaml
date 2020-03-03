@@ -1,0 +1,17 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-python@v1
+    - uses: dschep/install-pipenv-action@v1
+    - run: pipenv run pytest

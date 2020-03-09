@@ -48,7 +48,7 @@ class TestInt:
     def test_div(self, x, y, result):
         assert x / y == result
 
-    @pytest.mark.parametrize("x", [(0), (1), (-1)])
+    @pytest.mark.parametrize("x", [0, 1, -1])
     def test_zero_div(self, x):
         with pytest.raises(ZeroDivisionError):
             x / 0

@@ -22,7 +22,7 @@ class TestDict:
 
     @pytest.mark.parametrize("dictt, key, value, result", [
         (dict(), 1, 1, {1: 1}),
-        ({1: 1}, 1, 1, {1: 1}),
+        ({1: 1}, 1, 2, {1: 1}),
         ({1: 1}, 2, 2, {1: 1, 2: 2}),
     ])
     def test_add(self, dictt, key, value, result):

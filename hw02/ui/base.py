@@ -10,4 +10,4 @@ class BaseCase:
         self.driver: GeckoDriverManager = driver
         self.config = config
         self.login_page: LoginPage = request.getfixturevalue('login_page')
-        # self.campaign_page: CampaignsPage = request.getfixturevalue('campaign_page')
+

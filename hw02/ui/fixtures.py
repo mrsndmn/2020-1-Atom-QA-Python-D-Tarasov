@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from selenium import webdriver
@@ -6,7 +8,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
 from ui.pages.base import BasePage
-from ui.pages.main import MainPage
+from ui.pages.login import LoginPage
+from ui.pages.campaigns import CampaignsPage
+
 
 class UsupportedBrowserException(Exception):
     pass
@@ -16,27 +20,41 @@ class UsupportedBrowserException(Exception):
 def base_page(driver):
     return BasePage(driver)
 
+@pytest.fixture(scope='function')
+def login_page(driver):
+    return LoginPage(driver)
 
 @pytest.fixture(scope='function')
-def main_page(driver):
-    return MainPage(driver)
+def logined_driver(driver, login_page):
+    login_page.login(os.getenv("MYTARGET_USER"), os.getenv("MYTARGET_PASSWORD"))
+    driver = login_page.driver
+    return driver
+
+
+
+@pytest.fixture(scope='function')
+def campaign_page(logined_driver):
+    logined_driver.get("https://target.my.com/campaigns/list") # todo urljoin
+    return CampaignsPage(logined_driver)
+
+@pytest.fixture(scope='session')
+def test_img():
+    return os.path.abspath('hw02/img/when_you_lost_root.png')
 
 @pytest.fixture(scope='function')
 def driver(config):
     browser = config['browser']
     version = config['version']
+    chrome_path = config['chrome_path']
     url = config['url']
-    download_dir = config['download_dir']
 
     if browser == 'chrome':
         options = ChromeOptions()
-        options.binary_location = '/usr/bin/chromium-freeworld'
+        options.binary_location = chrome_path
 
-        manager = ChromeDriverManager(version=version, options=options)
+        manager = ChromeDriverManager(version=version)
+        driver = webdriver.Chrome(executable_path=manager.install(), options=options)
 
-        # prefs = {"download.default_directory": download_dir}
-        # options.add_experimental_option('prefs', prefs)
-        #
         # capabilities = {'acceptInsecureCerts': True,
         #                 'browserName': 'chrome',
         #                 'version': version,
@@ -46,6 +64,7 @@ def driver(config):
         #                           options=options,
         #                           desired_capabilities=capabilities
         #                           )
+
     elif browser == 'firefox':
         manager = GeckoDriverManager(version=version)
         driver = webdriver.Firefox(executable_path=manager.install())
@@ -54,7 +73,6 @@ def driver(config):
         raise UsupportedBrowserException(f'Usupported browser: "{browser}"')
 
     driver.get(url)
-    driver.maximize_window()
     yield driver
     driver.close()
 

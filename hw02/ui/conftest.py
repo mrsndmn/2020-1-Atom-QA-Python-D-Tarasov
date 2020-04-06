@@ -6,13 +6,13 @@ class UnsupportedBrowserException(Exception):
     pass
 
 def pytest_addoption(parser):
-    parser.addoption('--url', default='https://target.my.com/')
+    parser.addoption('--url', default='https://account.my.com/')
     parser.addoption('--browser', default='chrome')
     parser.addoption('--chrome-path', default='')
     parser.addoption('--browser_ver', default='80.0.3987.106')
 
 @pytest.fixture(scope='session')
-def Config(request):
+def config(request):
     url = request.config.getoption('--url')
     browser = request.config.getoption('--browser')
     version = request.config.getoption('--browser_ver')

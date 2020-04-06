@@ -1,11 +1,15 @@
+import os
+
 from ui.base import BaseCase
 
 
 class TestUI(BaseCase):
 
-    def test_login(self):
-        self.main_page.login()
-        self.driver
+    def test_login(self, logined_driver):
+        assert 'err' not in logined_driver.current_url
+
+    def test_new_campaign(self, test_img):
+        self.campaign_page.create(test_img)
 
     # # @pytest.mark.skip(reason='TEMP')
     # @pytest.mark.parametrize('query', ['pycon', 'python'])

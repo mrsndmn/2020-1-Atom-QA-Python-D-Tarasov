@@ -22,7 +22,7 @@ class BasePage:
         self.driver.execute_script(script)
 
     @allure.step('Clicking on {locator}...')
-    def click(self, locator, timeout=None):
+    def click(self, locator, timeout=20):
         for i in range(RETRY_COUNT):
             try:
                 self.find(locator)
@@ -35,26 +35,21 @@ class BasePage:
                     pass
         raise
 
-    def fill_input(self, locator, text):
-        input_field = self.find(locator)
-        input_field.clear()
+    def fill_input(self, locator, text, timeout=20, no_clear=False):
+        input_field = self.find(locator, timeout=timeout)
+        if not no_clear:
+            input_field.clear()
         input_field.send_keys(text)
         return
 
 
-    # def scroll_to_element(self, element):
-    #     self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
-    #
-    # def wait(self, timeout=None):
-    #     if timeout is None:
-    #         timeout = 5
-    #     return WebDriverWait(self.driver, timeout=timeout)
-    #
-    # def count_elements(self, locator, count, timeout=1):
-    #     self.wait(timeout).until(lambda browser: len(browser.find_elements(*locator)) == count)
-    #
-    # def search(self, query):
-    #     search_field = self.find(self.locators.QUERY_LOCATOR)
-    #     search_field.clear()
-    #     search_field.send_keys(query)
-    #     self.find(self.locators.GO_BUTTON).click()
+    def scroll_to_element(self, element):
+        self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
+
+    def wait(self, timeout=None):
+        if timeout is None:
+            timeout = 5
+        return WebDriverWait(self.driver, timeout=timeout)
+
+    def count_elements(self, locator, count, timeout=1):
+        self.wait(timeout).until(lambda browser: len(browser.find_elements(*locator)) == count)

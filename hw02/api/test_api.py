@@ -4,6 +4,7 @@ import pytest
 import os
 from api.mytarget_client import MyTargetClient
 
+@pytest.mark.API
 class TestMyTargetAPI:
 
     @pytest.fixture(scope='class')
@@ -17,15 +18,12 @@ class TestMyTargetAPI:
         assert json_response['name'] == test_seg_name
         return json_response
 
-    @pytest.mark.API
     def test_login(self, api_client):
         print(api_client.session)
 
-    @pytest.mark.API
     def test_new_segment(self, segment):
         assert 'id' in segment
 
-    @pytest.mark.API
     def test_del_segment(self, api_client, segment):
         assert 'id' in segment
         api_client.del_segment(segment['id'])

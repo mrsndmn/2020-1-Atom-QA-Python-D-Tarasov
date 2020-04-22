@@ -2,7 +2,6 @@ import pytest
 from webdriver_manager.firefox import GeckoDriverManager
 
 from ui.pages.login import LoginPage
-from ui.pages.campaigns import CampaignsPage
 
 class BaseCase:
     @pytest.fixture(scope='function', autouse=True)

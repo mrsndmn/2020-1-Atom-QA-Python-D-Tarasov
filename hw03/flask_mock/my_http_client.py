@@ -18,7 +18,7 @@ class MyHTTPClient():
 
         parsed_url: urllib.parse.ParseResult = urlparse(url)
 
-        print(parsed_url)
+        # print(parsed_url)
 
         if parsed_url.scheme != 'http':
             raise ValueError("Only http proto is supported")
@@ -33,22 +33,27 @@ class MyHTTPClient():
 
         client.connect((ipaddr, port))
 
+        if body is not None:
+            headers['Content-Length'] = len(body)
+        else:
+            body = ''
+
         headers['Host'] = parsed_url.hostname
         if 'User-Agent' not in headers:
             headers['User-Agent'] = 'curl'
 
         headers_encoded = ''
         for k in headers:
-            header_val = headers[k]
+            header_val = str(headers[k])
             header_val = re.sub(r"\n", ' ', header_val)
             headers_encoded += f'{k}: {header_val}\r\n'
 
         path = parsed_url.path + parsed_url.query
         if path == '':
             path = '/'
-        request = f'GET {path} HTTP/1.1\r\n'+ headers_encoded +'\r\n\r\n'
-        if body is not None:
-            request += body
+
+        request = f'{method} {path} HTTP/1.1\r\n'+ headers_encoded +'\r\n' + body
+
 
         print(request)
         client.send(request.encode())
@@ -75,7 +80,7 @@ class MyHTTPClient():
 
         for i, l in enumerate(data[1:]):
             if l == '':
-                resp['body'] = data[i:]
+                resp['body'] = data[i+1:]
                 break
             header, header_value = l.split(": ")
             # todo on duplicate header we should stack them in array

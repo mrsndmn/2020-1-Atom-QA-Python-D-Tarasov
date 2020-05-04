@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
-from mysql_client import MysqlOrmConnection
-from models.nginxlogs import NginxLog, Base
+from db.mysql_client import MysqlOrmConnection
+from db.models.nginxlogs import NginxLog, Base
 
 load_dotenv()
 

@@ -1,7 +1,7 @@
 import os
 import argparse
 
-from nginxlogline import LogLine
+from bash_scripting.nginxlogline import LogLine
 
 parser = argparse.ArgumentParser(description='nginx logs parser')
 

@@ -1,5 +1,3 @@
-import pymysql
-
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 

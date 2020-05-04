@@ -1,10 +1,10 @@
 import os
 from dotenv import load_dotenv
-from mysql_client import MysqlOrmConnection
+from db.mysql_client import MysqlOrmConnection
 import argparse
 
 from bash_scripting.nginxlogline import LogLine
-from models.nginxlogs import NginxLog
+from db.models.nginxlogs import NginxLog
 
 load_dotenv()
 

@@ -2,8 +2,8 @@
 import os
 from faker import Faker
 import pytest
-from mysql_client import MysqlOrmConnection
-from models.nginxlogs import NginxLog
+from db.mysql_client import MysqlOrmConnection
+from db.models.nginxlogs import NginxLog
 from dotenv import load_dotenv
 load_dotenv()
 

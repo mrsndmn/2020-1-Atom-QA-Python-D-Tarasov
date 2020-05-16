@@ -6,6 +6,10 @@ authors = ["Dmitry Tarasov <d.tarasov@corp.mail.ru>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+vk-api = "^11.8.0"
+python-dotenv = "^0.13.0"
+flask = "^1.1.2"
+pytest = "^5.4.2"
 
 [tool.poetry.dev-dependencies]
 

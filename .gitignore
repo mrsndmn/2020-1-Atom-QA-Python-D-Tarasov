@@ -7,3 +7,5 @@ Pipfile.lock
 .env
 *.out
 *.dockerimage
+.vscode
+.lock

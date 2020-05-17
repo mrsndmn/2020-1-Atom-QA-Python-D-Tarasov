@@ -9,7 +9,6 @@
           branches:
             - origin/project
 
-
 - job:
     name: final-project
     description: 'Final project job'
@@ -30,7 +29,39 @@
       - shell: |
           mkdir $WORKSPACE/allure-results
           cd src/qapython-tarasov/project
-          pytest -mslv tests --alluredir=$WORKSPACE/allure-results
+
+          PYTHONPATH=. python -m pytest -m api -slv --alluredir=$WORKSPACE/allure-results
+
+    publishers:
+      - allure:
+          results-path:
+            - path: allure-results
+          report-build-policy: ALWAYS
+
+
+- job:
+    name: final-project-vkapi
+    description: 'Final project vk api tests'
+    project-type: freestyle
+
+    scm:
+      - final-project
+
+    wrappers:
+      - timestamps
+      - workspace-cleanup
+
+    triggers:
+      - pollscm:
+          cron: "* * * * 5"
+
+    builders:
+      - shell: |
+          mkdir $WORKSPACE/allure-results
+          cd src/qapython-tarasov/vkapi
+          pip install -r requirements.txt
+          pip install pytest
+          PYTHONPATH=. python -m pytest -m api -slv --alluredir=$WORKSPACE/allure-results
 
     publishers:
       - allure:

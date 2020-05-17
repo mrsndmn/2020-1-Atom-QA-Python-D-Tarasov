@@ -14,7 +14,7 @@ podman pod create --name qa-project -p 3306:3306 -p 8000:8000 -p 8001:8001 -p 80
 
 Запускаем женкинс
 ```
-podman run -d --pod qa-project --name qajenkins -v jenkins_home:/var/jenkins_home localhost/myjenkins
+podman run -d --pod qa-project --name qajenkins -v jenkins_home:/var/jenkins_home:rw,exec localhost/myjenkins
 ```
 
 Инитим базу

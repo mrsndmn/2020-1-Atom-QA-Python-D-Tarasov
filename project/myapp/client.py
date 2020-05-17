@@ -9,10 +9,11 @@ class MyAppClient:
         url = urljoin(self.base_url, url)
         return requests.request(method, url, **kwargs)
 
-    def add_user(self, username, password, email):
-        return self._request('POST', '/api/add_user', data={"username": username,"password": password,"email": email})
+    def add_user(self, username, password, email) -> requests.Response:
+        return self._request('POST', '/api/add_user', json={"username": username,"password": password,"email": email})
 
     def delete_user(self, username):
+        # это плохо удалять пользователей с помощью метода GET
         return self._request('GET', f"/api/del_user/{username}")
 
     def block_user(self, username):

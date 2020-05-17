@@ -9,7 +9,7 @@ podman build -t qamyapp --file dockerfiles/myapp/Dockerfile
 
 Создаем под
 ```
-podman pod create --name qa-project -p 8000-8080
+podman pod create --name qa-project -p 3306:3306 -p 8000:8000 -p 8001:8001
 ```
 
 Запускаем женкинс
@@ -25,13 +25,13 @@ podman run -d --pod qa-project --name qajenkins -v jenkins_home:/var/jenkins_hom
 Запускаем сервисы
 ```
 # mysql
-podman run --pod qa-project --name qamysql -e MYSQL_DATABASE=technoatom -e MYSQL_USER=test_qa -e MYSQL_PASSWORD=qa_test -e MYSQL_ROOT_PASSWORD=root -v qa-mysql-volume:/var/lib/mysql mysql
+podman run -d --pod qa-project --name qamysql -e MYSQL_DATABASE=technoatom -e MYSQL_USER=test_qa -e MYSQL_PASSWORD=qa_test -e MYSQL_ROOT_PASSWORD=root -v qa-mysql-volume:/var/lib/mysql mysql
 
 # приложение
 podman run -d --pod qa-project --name qamyapp qamyapp
 
 # вкапи. Токен нужно взять из настроек приложения
-run -d --pod qa-project --name qavkapi -e VK_API_TOKEN=$VK_APP_SERVICE_TOKEN localhost/qa-vkapi
+podman run -d --pod qa-project --name qavkapi -e VK_API_TOKEN=$VK_APP_SERVICE_TOKEN localhost/qa-vkapi
 ```
 
 После того, как все поднялось, можно проинитить базу

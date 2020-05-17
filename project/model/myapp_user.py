@@ -15,7 +15,7 @@ class User(Base):
     __tablename__ = 'test_users'
     __table_args__ = {'mysql_charset': 'utf8'}
 
-    id = Column(Integer, autoincrement=True)
+    id = Column(Integer, autoincrement=True, primary_key=True)
     username = Column(String(16))
     password = Column(String(255), nullable=False)
     email = Column(String(64), nullable=False)
@@ -36,10 +36,10 @@ class User(Base):
 
 class MysqlOrmConnection:
 
-    def __init__(self, user, password, db_name):
-        self.user = user
-        self.password = password
-        self.db_name = db_name
+    def __init__(self):
+        self.user = os.getenv('MYSQL_USER')
+        self.password = os.getenv('MYSQL_PASSWORD')
+        self.db_name = os.getenv('MYSQL_DB')
 
         self.host = os.getenv('MYSQL_HOST', '127.0.0.1')
         self.port = os.getenv('MYSQL_PORT', 3306)

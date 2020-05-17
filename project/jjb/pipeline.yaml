@@ -1,0 +1,39 @@
+- scm:
+    name: final-project
+
+    scm:
+      - git:
+          url: git@github.com:mrsndmn/2020-1-Atom-QA-Python-D-Tarasov.git
+          credentials-id: 2529bc9c-a439-467d-8db0-3356ec6ef8f5
+          basedir: src/qapython-tarasov
+          branches:
+            - origin/project
+
+
+- job:
+    name: final-project
+    description: 'Final project job'
+    project-type: freestyle
+
+    scm:
+      - final-project
+
+    wrappers:
+      - timestamps
+      - workspace-cleanup
+
+    triggers:
+      - pollscm:
+          cron: "* * * * *"
+
+    builders:
+      - shell: |
+          mkdir $WORKSPACE/allure-results
+          cd src/qapython-tarasov/project
+          pytest -mslv tests --alluredir=$WORKSPACE/allure-results
+
+    publishers:
+      - allure:
+          results-path:
+            - path: allure-results
+          report-build-policy: ALWAYS

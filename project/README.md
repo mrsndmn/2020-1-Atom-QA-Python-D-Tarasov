@@ -9,7 +9,7 @@ podman build -t qamyapp --file dockerfiles/myapp/Dockerfile
 
 Создаем под
 ```
-podman pod create --name qa-project -p 3306:3306 -p 8000:8000 -p 8001:8001
+podman pod create --name qa-project -p 3306:3306 -p 8000:8000 -p 8001:8001 -p 8080-8090
 ```
 
 Запускаем женкинс

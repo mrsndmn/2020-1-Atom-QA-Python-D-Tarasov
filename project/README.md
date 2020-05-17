@@ -33,3 +33,8 @@ podman run -d --pod qa-project --name qamyapp qamyapp
 # вкапи. Токен нужно взять из настроек приложения
 run -d --pod qa-project --name qavkapi -e VK_API_TOKEN=$VK_APP_SERVICE_TOKEN localhost/qa-vkapi
 ```
+
+После того, как все поднялось, можно проинитить базу
+```
+podman exec qamyapp /app/myapp --config=/etc/myapp.conf --setup
+```

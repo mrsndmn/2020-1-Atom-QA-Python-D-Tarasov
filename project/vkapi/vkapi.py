@@ -18,8 +18,8 @@ print(vk_session.method('users.get', values={"user_ids": "mrsndmn"}))
 
 app = Flask(__name__)
 
-host = '127.0.0.1'
-port = 5000
+host = '0.0.0.0'
+port = os.getenv("PORT", 8000)
 
 @app.route('/vk_id/<shortname>')
 def get_user_id_by_shortname(shortname: str):

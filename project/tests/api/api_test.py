@@ -16,7 +16,10 @@ from myapp.client import MyAppClient
 @pytest.mark.api
 class TestAPI:
 
-    myapp_client = MyAppClient(os.getenv('MYAPP_URL', 'http://localhost:8001'))
+    @pytest.fixture(scope='function', autouse=True)
+    def setup(self, request, logger):
+        self.myapp_client: MyAppClient = request.getfixturevalue('api_client')
+        self.myapp_client.logger = logger
 
     @pytest.mark.parametrize('username, password, email', [
         ('testqa', 'qatest', 'mrsndmn@example.com'),
@@ -27,8 +30,18 @@ class TestAPI:
         Позитивные кейсы по созданию пользователей.
         '''
         resp = self.myapp_client.add_user(username, password, email)
+        assert resp.status_code in [200, 304]
 
-        print(resp.json())
-        assert resp.status_code == 200
-
-    # def test_create_user(self, faker, myqsl_session, regular_user):
+    @pytest.mark.parametrize('username, password, email, desc', [
+        ('', '', '', 'Все поля пустые'),
+        ('username', 'password', '@', 'email невалидный'),
+        ('x' * 17, 'y'*5, 'example@example.com', 'Слишком длинный логин'),
+        ('x' * 5, 'y'*256, 'example@example.com', 'Слишком длинный пароль'),
+        ('x' * 5, 'y'*5, 'z'*(53) + '@example.com', 'Слишком длинная почта'),
+    ])
+    def test_negative_create_user(self, username, password, email, desc):
+        '''
+        Негативные кейсы по созданию пользователей.
+        '''
+        resp = self.myapp_client.add_user(username, password, email)
+        assert resp.status_code == 400, desc

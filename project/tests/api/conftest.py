@@ -1,4 +1,5 @@
 import pytest
+import os
 from model.myapp_user import User, MysqlOrmConnection
 from myapp.client import MyAppClient
 
@@ -9,17 +10,23 @@ from faker.providers import internet
 def faker_session_locale():
     return ['en_US']
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session')
 def myqsl_session():
     return MysqlOrmConnection().session
 
+@pytest.fixture(scope='session')
+def api_client():
+    return MyAppClient(os.getenv('MYAPP_URL', 'http://localhost:8001'))
+
 @pytest.fixture
-def regular_user(myqsl_session, faker: faker.Faker, user_name_length=16, password_length=255, email=None):
+def regular_user(myqsl_session):
 
-    if email is None:
-        email = faker.ascii_free_email()
+    username = 'testqaqaqa'
+    user = myqsl_session.query(User).filter_by(username=username).first()
+    if user is not None:
+        myqsl_session.session.delete(user)
 
-    user = User(username=faker.user_name(user_name_length), password=faker.random_letters(password_length), email=email)
+    user = User(username=username, password='qaqaqatest', email='testqaqaqa@example.com')
 
     myqsl_session.add(user)
     myqsl_session.commit()

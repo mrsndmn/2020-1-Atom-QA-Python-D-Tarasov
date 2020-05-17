@@ -4,10 +4,10 @@ RUN mkdir /app
 COPY requirements.txt /app/
 
 WORKDIR /app
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
-COPY vkapi.py app/
+COPY vkapi.py /app/
 
 EXPOSE 8000
 
-ENTRYPOINT [ "python", 'vkapi.py' ]
+ENTRYPOINT [ "/usr/local/bin/python3", "vkapi.py" ]

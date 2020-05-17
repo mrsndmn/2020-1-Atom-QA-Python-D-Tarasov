@@ -38,3 +38,23 @@ run -d --pod qa-project --name qavkapi -e VK_API_TOKEN=$VK_APP_SERVICE_TOKEN loc
 ```
 podman exec qamyapp /app/myapp --config=/etc/myapp.conf --setup
 ```
+
+# TODO распределить по приоритету баги
+
+# Тестирование API
+
+# Баги:
+
+---
+
+#### Expected Behavior:
+
+#### Current Behavior:
+
+#### Possible Solution
+
+#### Steps to Reproduce
+
+1.
+
+### Got

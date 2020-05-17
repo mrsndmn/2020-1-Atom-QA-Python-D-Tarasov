@@ -24,7 +24,7 @@
 
     triggers:
       - pollscm:
-          cron: "* * * * *"
+          cron: "* * * * 5"
 
     builders:
       - shell: |

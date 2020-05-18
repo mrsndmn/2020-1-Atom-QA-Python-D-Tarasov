@@ -50,6 +50,10 @@
     wrappers:
       - timestamps
       - workspace-cleanup
+      - credentials-binding:
+        - text:
+          credential-id: 818c8244-9ace-431f-80f6-266d98c03e4a
+          variable: VK_API_TOKEN
 
     triggers:
       - pollscm:

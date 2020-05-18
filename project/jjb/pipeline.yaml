@@ -30,7 +30,7 @@
           mkdir $WORKSPACE/allure-results
           cd src/qapython-tarasov/project
 
-          PYTHONPATH=. python -m pytest -m api -slv --alluredir=$WORKSPACE/allure-results
+          PYTHONPATH=. python3 -m pytest -m api -slv --alluredir=$WORKSPACE/allure-results
 
     publishers:
       - allure:

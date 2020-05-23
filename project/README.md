@@ -21,7 +21,7 @@ podman run -d --pod qa-project --name qamysql -e MYSQL_DATABASE=technoatom -e MY
 podman run -d --pod qa-project --name myapp qamyapp
 
 # вкапи. Токен нужно взять из настроек приложения
-podman run -d --pod qa-project --name vkapi -e VK_API_TOKEN=$VK_API_TOKEN localhost/qa-vkapi
+podman run -d --pod qa-project --name vkapi -e VK_API_TOKEN=$VK_API_TOKEN qa-vkapi
 ```
 
 После того, как все поднялось, можно проинитить базу

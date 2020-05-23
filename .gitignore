@@ -10,4 +10,5 @@ Pipfile.lock
 .vscode
 .lock
 allure
+allure-results
 project/jjb/jenkins_jobs.ini

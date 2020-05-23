@@ -25,7 +25,10 @@ pipeline {
             }
 
             steps {
-                sh "echo 1"
+                dir('project') {
+                    sh "poetry install"
+                    sh "PYTHONPATH=vkapi python -m pytest -s --alluredir=$WORKSPACE/allure-results"
+                }
             }
         }
 

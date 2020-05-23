@@ -8,6 +8,9 @@
         - git:
             url: git@github.com:mrsndmn/2020-1-Atom-QA-Python-D-Tarasov.git
             credentials-id: ca9db22f-a813-4dcc-a700-733603c4279a
+            clean:
+              after: True
+            wipe-workspace: False
       script-path: project/jjb/Jenkinsfile
 
     wrappers:

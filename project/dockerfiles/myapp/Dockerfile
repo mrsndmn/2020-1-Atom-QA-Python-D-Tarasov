@@ -1,4 +1,4 @@
-FROM localhost/myapp
+FROM localhost/myapp-base
 
 COPY myapp.conf /etc/myapp.conf
 

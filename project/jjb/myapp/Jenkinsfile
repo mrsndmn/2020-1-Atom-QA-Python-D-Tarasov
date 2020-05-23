@@ -16,7 +16,7 @@ pipeline {
             steps {
                 sh "podman info --debug"
                 sh "podman build -t vkapi --file project/dockerfiles/vkapi/Dockerfile project/vkapi"
-                sh "podman build -t myapp --file project/dockerfiles/myapp/Dockerfile project/myapp"
+                sh "podman build -t myapp --file project/dockerfiles/myapp/Dockerfile project/dockerfiles/myapp"
             }
         }
 

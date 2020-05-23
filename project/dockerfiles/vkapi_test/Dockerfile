@@ -1,6 +1,6 @@
-FROM local/vkapi
+FROM vkapi
 
-RUN pip allure-pytest
+RUN pip install allure-pytest
 
 COPY tests /app/tests/
 

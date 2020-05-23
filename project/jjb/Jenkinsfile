@@ -18,14 +18,16 @@ pipeline {
 
         stage("Build") {
             steps {
-                sh "podman build -t vkapi --file project/dockerfiles/vkapi/Dockerfile project/vkapi project/"
-                sh "podman build -t vkapi_test --file project/dockerfiles/vkapi/Dockerfile project/vkapi_test project/"
+                sh "podman build -t vkapi --file project/dockerfiles/vkapi/Dockerfile project/vkapi"
+                sh "podman build -t vkapi_test --file project/dockerfiles/vkapi_test/Dockerfile project/vkapi"
             }
         }
 
         stage("Testing") {
             steps {
-                sh "podman run -it --env VK_API_TOKEN=$VK_API_TOKEN vkapi_test"
+                sh "podman run -it --name vkapi_test_container --env VK_API_TOKEN=$VK_API_TOKEN vkapi_test"
+                sh "podman cp vkapi_test_container:/allure-results $WORKSPACE/allure-results"
+                sh "podman rm vkapi_test_container"
             }
         }
     }

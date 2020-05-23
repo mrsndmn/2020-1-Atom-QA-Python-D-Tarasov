@@ -18,6 +18,7 @@ pipeline {
 
         stage("Build") {
             steps {
+                sh "podman info --debug"
                 sh "podman build -t vkapi --file project/dockerfiles/vkapi/Dockerfile project/vkapi"
                 sh "podman build -t vkapi_test --file project/dockerfiles/vkapi_test/Dockerfile project/vkapi"
             }

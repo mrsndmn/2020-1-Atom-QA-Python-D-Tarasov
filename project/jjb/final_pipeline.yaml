@@ -1,0 +1,18 @@
+- job:
+    name: final-project
+    description: 'Final Project'
+    project-type: pipeline
+
+    pipeline-scm:
+      scm:
+        - git:
+            url: git@github.com:mrsndmn/2020-1-Atom-QA-Python-D-Tarasov.git
+            credentials-id: ca9db22f-a813-4dcc-a700-733603c4279a
+      script-path: project/jjb/Jenkinsfile
+
+    wrappers:
+      - workspace-cleanup
+
+    triggers:
+      - pollscm:
+          cron: "* * * * /5"

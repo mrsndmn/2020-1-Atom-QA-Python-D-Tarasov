@@ -22,7 +22,7 @@
       - workspace-cleanup
       - credentials-binding:
         - text:
-            credential-id: 818c8244-9ace-431f-80f6-266d98c03e4a
+            credential-id: 27a5cd39-a350-4721-b2da-9d8ecaea8fcc
             variable: VK_API_TOKEN
 
     triggers:

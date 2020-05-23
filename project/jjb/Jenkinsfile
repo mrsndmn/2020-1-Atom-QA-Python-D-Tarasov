@@ -1,0 +1,41 @@
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent {
+        label 'master'
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+        timestamps()
+    }
+
+    environment {
+        VK_API_TOKEN = credentials('27a5cd39-a350-4721-b2da-9d8ecaea8fcc')
+    }
+
+    stages {
+
+        stage("Build") {
+            steps {
+                sh "podman build -t vkapi --file project/dockerfiles/vkapi/Dockerfile project/vkapi project/"
+                sh "podman build -t vkapi_test --file project/dockerfiles/vkapi/Dockerfile project/vkapi_test project/"
+            }
+        }
+
+        stage("Testing") {
+            steps {
+                sh "podman run -it --env VK_API_TOKEN=$VK_API_TOKEN vkapi_test"
+            }
+        }
+    }
+
+    post {
+        always {
+            allure([
+                reportBuildPolicy: 'ALWAYS',
+                results: [[path: '$WORKSPACE/allure-results']]
+            ])
+        }
+    }
+}

@@ -4,8 +4,11 @@ RUN mkdir /app
 COPY requirements.txt /app/
 
 WORKDIR /app
-RUN pip3 install -r requirements.txt
 
+# todo тесты, теоретически нужно было бы унести в отдельный докерфайл
+RUN pip3 install -r requirements.txt && pip allure-pytest
+
+COPY tests /app/tests/
 COPY vkapi.py /app/
 
 EXPOSE 8000

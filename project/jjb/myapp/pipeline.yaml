@@ -11,7 +11,7 @@
             clean:
               after: True
             wipe-workspace: False
-      script-path: project/jjb/Jenkinsfile
+      script-path: project/jjb/myapp/Jenkinsfile
 
     wrappers:
       - workspace-cleanup

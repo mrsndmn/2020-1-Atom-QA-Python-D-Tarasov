@@ -14,7 +14,6 @@ pipeline {
 
         stage("Build") {
             steps {
-                sh "podman info --debug"
                 sh "podman build -t vkapi --file project/dockerfiles/vkapi/Dockerfile project/vkapi"
                 sh "podman build -t myapp --file project/dockerfiles/myapp/Dockerfile project/dockerfiles/myapp"
             }
@@ -32,8 +31,8 @@ pipeline {
 
         stage("Cleanup") {
             steps {
-                sh "podman pod stop qa_app_tests"
-                sh "podman pod rm qa_app_tests"
+                sh "podman pod stop qa_app_tests || true"
+                sh "podman pod rm qa_app_tests || true"
             }
         }
     }

@@ -26,9 +26,9 @@ pipeline {
 
         stage("Testing") {
             steps {
+                sh "podman rm vkapi_test_container"
                 sh "podman run -it --name vkapi_test_container --env VK_API_TOKEN=$VK_API_TOKEN vkapi_test"
                 sh "podman cp vkapi_test_container:/allure-results $WORKSPACE/allure-results"
-                sh "podman rm vkapi_test_container"
             }
         }
     }

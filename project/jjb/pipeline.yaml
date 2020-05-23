@@ -20,6 +20,10 @@
     wrappers:
       - timestamps
       - workspace-cleanup
+      - credentials-binding:
+        - text:
+            credential-id: 818c8244-9ace-431f-80f6-266d98c03e4a
+            variable: VK_API_TOKEN
 
     triggers:
       - pollscm:
@@ -29,8 +33,12 @@
       - shell: |
           mkdir $WORKSPACE/allure-results
           cd src/qapython-tarasov/project
+          python3.8 -m venv venv
+          . ./venv/bin/activate
+          ./venv/bin/pip3.8 install -U setuptools
+          ./venv/bin/pip3.8 install -r requirements.txt
 
-          PYTHONPATH=. python3 -m pytest -m api -slv --alluredir=$WORKSPACE/allure-results
+          PYTHONPATH=vkapi ./venv/bin/python3.8 -m pytest vkapi/ --alluredir=$WORKSPACE/allure-results
 
     publishers:
       - allure:
@@ -63,10 +71,13 @@
       - shell: |
           mkdir $WORKSPACE/allure-results
           cd src/qapython-tarasov/project
-          python3 -m venv venv
-          ./venv/bin/pip3 install -r requirements.txt
+          rm -rf venv
+          python3.8 -m venv venv
+          . ./venv/bin/activate
+          ./venv/bin/pip3.8 install -U setuptools
+          ./venv/bin/pip3.8 install -r requirements.txt
 
-          PYTHONPATH=vkapi ./venv/bin/python3 -m pytest vkapi/ --alluredir=$WORKSPACE/allure-results
+          PYTHONPATH=vkapi ./venv/bin/python -m pytest vkapi/ --alluredir=$WORKSPACE/allure-results
 
     publishers:
       - allure:

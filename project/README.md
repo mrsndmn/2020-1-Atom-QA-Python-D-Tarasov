@@ -39,6 +39,12 @@ podman run -d --pod qa-project --name qavkapi -e VK_API_TOKEN=$VK_APP_SERVICE_TO
 podman exec qamyapp /app/myapp --config=/etc/myapp.conf --setup
 ```
 
+# Что показалось странным:
+
+* Пароли не стоит хранить в открытом виде. Нужнохэшировать + солить.
+* Удаление пользователя методом GET, скорее всего, это должен быть метод DELETE
+
+
 # TODO распределить по приоритету баги
 
 # Тестирование API
@@ -46,6 +52,8 @@ podman exec qamyapp /app/myapp --config=/etc/myapp.conf --setup
 # Баги:
 
 ---
+
+
 
 #### Expected Behavior:
 

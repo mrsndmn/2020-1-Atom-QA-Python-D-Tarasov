@@ -15,7 +15,6 @@ vk_session = vk_api.VkApi(token=VK_API_TOKEN)
 
 print(vk_session.method('users.get', values={"user_ids": "mrsndmn"}))
 
-
 app = Flask(__name__)
 
 host = '0.0.0.0'
@@ -24,6 +23,7 @@ port = os.getenv("PORT", 8000)
 @app.route('/vk_id/<shortname>')
 def get_user_id_by_shortname(shortname: str):
     if re.match(r'^\d+$', shortname):
+        # todo return 400
         return {}
 
     # в id должны быть только буквы, цифры и "_"
@@ -31,7 +31,7 @@ def get_user_id_by_shortname(shortname: str):
         return {}
 
     try:
-        res = vk_session.method('users.get', values={"user_ids": "mrsndmn"})
+        res = vk_session.method('users.get', values={"user_ids": shortname})
 
         if isinstance(res, list) and len(res) > 0:
             return {"vk_id": res[0]['id']}
@@ -42,6 +42,7 @@ def get_user_id_by_shortname(shortname: str):
 
     return {}
 
+# todo fake users_ids
 
 if __name__ == '__main__':
     app.run(host=host, port=port)

@@ -10,10 +10,6 @@ pipeline {
         timestamps()
     }
 
-    environment {
-        VK_API_TOKEN = credentials('27a5cd39-a350-4721-b2da-9d8ecaea8fcc')
-    }
-
     stages {
 
         stage("Build") {
@@ -25,6 +21,10 @@ pipeline {
         }
 
         stage("Testing") {
+            environment {
+                VK_API_TOKEN = credentials('27a5cd39-a350-4721-b2da-9d8ecaea8fcc')
+            }
+
             steps {
                 sh "podman rm vkapi_test_container"
                 sh "podman run -it --name vkapi_test_container --env VK_API_TOKEN=$VK_API_TOKEN vkapi_test"

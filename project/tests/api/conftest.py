@@ -15,7 +15,7 @@ def mysql_session():
 def api_client(request):
     mysql_session = MysqlOrmConnection().session
     user = _regular_user(mysql_session)
-    return MyAppClient(os.getenv('MYAPP_URL', 'http://localhost:8001'), user=user.username, password=user.password)
+    return MyAppClient(url=os.getenv('MYAPP_URL', 'http://localhost:8001'), user=user.username, password=user.password)
 
 @pytest.fixture()
 def regular_user(mysql_session):

@@ -29,11 +29,18 @@ class TestAPIBase:
 
 class TestAPILogin(TestAPIBase):
 
-    def test_login(self):
+    def test_login(self, regular_user):
         """
-        Проверяем, можно ли залогиниться пользователем и обновляет ля ли access_time
+        Проверяем, можно ли залогиниться пользователем и обновляетcя ли access_time
         """
-        pass
+
+        client = MyAppClient(os.getenv('MYAPP_URL', 'http://localhost:8001'), user=regular_user.username, password=regular_user.password)
+        mysql_session = MysqlOrmConnection().session
+        user = mysql_session.query(User).filter_by(username=regular_user.username).first()
+
+        assert user.access is None # тест на это поле работает только если есть рабочий браузер
+        assert user.active == True
+
 
 class TestAPICreateUser(TestAPIBase):
 
@@ -162,9 +169,60 @@ class TestAPIBlockUser(TestAPIBase):
         resp = self.myapp_client.block_user(long_username)
         assert resp.status_code == 400
 
-    def test_block(self, mysql_session, regular_user):
-        regular_user.active
-        pass
+    def test_block(self, api_client, mysql_session, regular_user):
+        """
+        Блокировка одним пользователем другого пользователя
+        """
+
+        regular_user.access = 1
+        mysql_session.commit()
+
+        res = api_client.block_user(regular_user.username)
+        assert res.status_code == 200
+
+        user = MysqlOrmConnection().session.query(User).filter_by(username=regular_user.username).first()
+        assert user.access == 0
+
+    def test_block_himself(self, api_client, mysql_session, regular_user):
+        """
+        Проверка, что пользователь может сам себя заблокировать
+        """
+
+        regular_user.access = 1
+        mysql_session.commit()
+
+        res = api_client.block_user(api_client.user)
+        assert res.status_code != 200
+
+        user = MysqlOrmConnection().session.query(User).filter_by(username=regular_user.username).first()
+        assert user.access == 0
+
+    def test_block_can_not_login(self, mysql_session, regular_user):
+        """
+        Заблокированный пользователь не должен иметь возможность залогиниться
+        """
+        regular_user.access = 0
+        mysql_session.commit()
+        client = MyAppClient()
+
+        resp = client.login(regular_user.username, regular_user.password)
+        assert resp.status_code == 401
+
+
+    def test_blocked_user_session_expires(self, mysql_session, api_client):
+        """
+        Если пользователь сначала логинется,
+        а потом его блокируют, его сессия должна экспайриться
+        """
+
+        # api_client уже авторизован
+        user = mysql_session.query(User).filter_by(username=api_client.user).first()
+        user.access = 0
+        mysql_session.commit()
+
+        resp = api_client.login(api_client.user, api_client.password)
+        assert resp.status_code == 401
+
 
 class TestAPIUnBlockUser(TestAPIBase):
 
@@ -172,8 +230,16 @@ class TestAPIUnBlockUser(TestAPIBase):
         resp = self.myapp_client.unblock_user(long_username)
         assert resp.status_code == 400
 
-    def test_unblock(self, mysql_session, regular_user):
-        pass
+    def test_unblock(self, api_client, mysql_session, regular_user, logger):
+        logger.debug(f"regular_user {regular_user}")
+        regular_user.access = None
+        mysql_session.commit()
+
+        res = api_client.unblock_user(regular_user.username)
+        assert res.status_code == 200
+
+        user = MysqlOrmConnection().session.query(User).filter_by(username=regular_user.username).first()
+        assert user.access == 1
 
 
 class TestAPIStatus(TestAPIBase):
@@ -186,4 +252,11 @@ class TestAPIStatus(TestAPIBase):
         assert resp.status_code == 200
         assert resp.json() == {"status":"ok"}
 
-
+    def test_status_unauthorized(self):
+        """
+        Проверка работоспособности приложения без авторизации
+        """
+        self.myapp_client.session = requests.Session()
+        resp = self.myapp_client.status()
+        assert resp.status_code == 200
+        assert resp.json() == {"status":"ok"}

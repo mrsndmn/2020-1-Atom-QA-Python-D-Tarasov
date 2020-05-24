@@ -19,8 +19,8 @@ class User(Base):
     username = Column(String(16))
     password = Column(String(255), nullable=False)
     email = Column(String(64), nullable=False)
-    access = Column(Boolean)
-    active = Column(Boolean)
+    access = Column(Integer)
+    active = Column(Integer)
     start_active_time = Column(Date)
 
     def __repr__(self):

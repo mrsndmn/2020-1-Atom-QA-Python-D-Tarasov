@@ -1,14 +1,17 @@
 import requests
 from urllib.parse import urljoin
-
+import os
 
 class MyAppClient:
-    def __init__(self, base_url, user="kirill", password="kirill_pass", logger=None):
-        self.base_url = base_url
+    def __init__(self, url=os.getenv('MYAPP_URL', 'http://localhost:8001'), user="kirill", password="kirill_pass", logger=None, no_login=False):
+        self.base_url = url
         self.logger = logger
 
         self.req_session = requests.Session()
-        self.login(user, password)
+
+        if not no_login:
+            resp = self.login(user, password)
+            assert resp.status_code == 200, 'login successful'
 
     def _request(self, method, url, **kwargs) -> requests.Response:
         url = urljoin(self.base_url, url)
@@ -34,7 +37,9 @@ class MyAppClient:
         return response
 
     def login(self, user, password, submit="Login"):
-        self._request('POST', '/login', data={"username":user, "password":password, "submit":submit})
+        self.user = user
+        self.password = password
+        return self._request('POST', '/login', data={"username":user, "password":password, "submit":submit})
 
     def add_user(self, username, password, email) -> requests.Response:
         return self._request('POST', '/api/add_user', json={"username": username,"password": password,"email": email})

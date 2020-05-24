@@ -35,4 +35,21 @@ def logger(request):
     os.remove(log_file)
 
 
-# todo по-хорошему, надо подождать, когда контейнер запустится через /status провеить это
+def pytest_addoption(parser):
+    parser.addoption('--url', default='http://192.168.122.221:8001/')
+    parser.addoption('--browser', default='chrome')
+    parser.addoption('--chrome-path', default='')
+    parser.addoption('--browser_ver', default=None)
+    parser.addoption('--selenoid', default='192.168.122.221:4444')
+
+
+@pytest.fixture(scope='session')
+def config(request):
+    url = request.config.getoption('--url')
+    browser = request.config.getoption('--browser')
+    version = request.config.getoption('--browser_ver')
+    chrome_path = request.config.getoption('--chrome-path')
+    selenoid = request.config.getoption('--selenoid')
+
+    return {'browser': browser, 'version': version, 'url': url, 'chrome_path': chrome_path, 'selenoid': selenoid}
+

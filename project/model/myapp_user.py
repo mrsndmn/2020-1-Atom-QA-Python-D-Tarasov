@@ -43,19 +43,18 @@ class MysqlOrmConnection:
 
         self.host = os.getenv('MYSQL_HOST', '127.0.0.1')
         self.port = os.getenv('MYSQL_PORT', 3306)
-
         self.connection = self.get_connection()
 
         session = sessionmaker(bind=self.connection.engine)
         self.session = session()
 
-    def get_connection(self, db_created=False):
+    def get_connection(self):
         engine = sqlalchemy.create_engine(
             'mysql+pymysql://{user}:{password}@{host}:{port}/{db}'.format(user=self.user,
                                                                           password=self.password,
                                                                           host=self.host,
                                                                           port=self.port,
-                                                                          db=self.db_name if db_created else ''),
+                                                                          db=self.db_name),
             encoding='utf8'
         )
 

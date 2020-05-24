@@ -37,6 +37,7 @@ podman exec qamyapp /app/myapp --config=/etc/myapp.conf --setup
 * В базе для username не стоит not null. Для active и access тоже
 * active access должны быть типа bool
 * странно, что пользователь может сам себя заблокировать
+* странно, что валидация полей пользователя на фронте и через апишку разные
 
 
 # TODO распределить по приоритету баги

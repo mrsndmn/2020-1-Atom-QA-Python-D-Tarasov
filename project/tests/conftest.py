@@ -35,7 +35,7 @@ def logger(request):
 
 
 def pytest_addoption(parser):
-    parser.addoption('--url', default='http://localhost:8001/login')
+    parser.addoption('--url', default='http://192.168.122.221:8001/login')
     parser.addoption('--browser', default='chrome')
     parser.addoption('--chrome-path', default='')
     # parser.addoption('--browser_ver', default='80.0.3987.106')

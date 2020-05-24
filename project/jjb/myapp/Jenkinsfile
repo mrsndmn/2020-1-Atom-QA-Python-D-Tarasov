@@ -33,7 +33,7 @@ pipeline {
                 // todo credentials to jenkins creds
                 sh "podman run -d --pod qa-project --name qamysql -e MYSQL_DATABASE=technoatom -e MYSQL_USER=test_qa -e MYSQL_PASSWORD=qa_test -e MYSQL_ROOT_PASSWORD=root -v qa-mysql-volume:/var/lib/mysql mysql"
                 sh "podman run -d --pod qa-project --name myapp myapp"
-                sh "podman exec myapp /app/myapp --config=/etc/myapp.conf --setup"
+                sh "podman exec myapp /app/myapp --config=/etc/myapp.conf --setup || true"
                 sh "podman run -d --pod qa-project --name vkapi -e VK_API_TOKEN=$VK_API_TOKEN vkapi"
             }
         }

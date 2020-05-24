@@ -29,12 +29,12 @@ class TestAPIBase:
 
 class TestAPILogin(TestAPIBase):
 
-    def test_login(self, regular_user):
+    def test_login(self, regular_user, logger):
         """
         Проверяем, можно ли залогиниться пользователем и обновляетcя ли access_time
         """
 
-        client = MyAppClient(os.getenv('MYAPP_URL', 'http://localhost:8001'), user=regular_user.username, password=regular_user.password)
+        client = MyAppClient(os.getenv('MYAPP_URL', 'http://localhost:8001'), user=regular_user.username, password=regular_user.password, logger=logger)
         mysql_session = MysqlOrmConnection().session
         user = mysql_session.query(User).filter_by(username=regular_user.username).first()
 
@@ -197,13 +197,13 @@ class TestAPIBlockUser(TestAPIBase):
         user = MysqlOrmConnection().session.query(User).filter_by(username=regular_user.username).first()
         assert user.access == 0
 
-    def test_block_can_not_login(self, mysql_session, regular_user):
+    def test_block_can_not_login(self, mysql_session, regular_user, logger):
         """
         Заблокированный пользователь не должен иметь возможность залогиниться
         """
         regular_user.access = 0
         mysql_session.commit()
-        client = MyAppClient()
+        client = MyAppClient(logger=logger)
 
         resp = client.login(regular_user.username, regular_user.password)
         assert resp.status_code == 401

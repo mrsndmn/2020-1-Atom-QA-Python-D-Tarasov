@@ -53,12 +53,12 @@ def driver(config, logger):
             "enableVideo": True
         }
 
-        driver = webdriver.Remote(command_executor='http://' + selenoid + '/wd/hub/',
+        driver = webdriver.Remote(command_executor=f'http://{selenoid}/wd/hub/',
                                     options=options,
                                     desired_capabilities=capabilities)
 
-        logger.info("video url: http://{selenoid}/video/{driver.session_id}.mp4")
-        allure.link('http://{selenoid}/video/{driver.session_id}.mp4', name='Browser video')
+        logger.info(f"video url: http://{selenoid}/video/{driver.session_id}.mp4")
+        allure.link(f'http://{selenoid}/video/{driver.session_id}.mp4', name='Browser video')
 
     else:
         if browser == 'chrome':

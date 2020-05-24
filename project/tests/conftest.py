@@ -4,6 +4,11 @@ import logging
 import os
 import uuid
 
+from testcontainers.general import TestContainer
+from testcontainers.mysql import MySqlContainer
+
+import testcontainers
+
 
 @pytest.fixture(scope='function')
 def logger(request):
@@ -28,3 +33,6 @@ def logger(request):
             allure.attach(f.read(), name=request.node.location[-1], attachment_type=allure.attachment_type.TEXT)
 
     os.remove(log_file)
+
+
+# todo по-хорошему, надо подождать, когда контейнер запустится через /status провеить это

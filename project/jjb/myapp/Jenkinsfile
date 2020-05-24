@@ -16,6 +16,26 @@ pipeline {
             steps {
                 sh "podman build -t vkapi --file project/dockerfiles/vkapi/Dockerfile project/vkapi"
                 sh "podman build -t myapp --file project/dockerfiles/myapp/Dockerfile project/dockerfiles/myapp"
+                dir('project') {
+                    sh "poetry install"
+                }
+            }
+        }
+
+        stage("Run environment") {
+            environment {
+                VK_API_TOKEN = credentials('27a5cd39-a350-4721-b2da-9d8ecaea8fcc')
+            }
+            steps {
+                // todo different pod name for each run
+                sh "podman pod stop qa-project || true"
+                sh "podman pod rm qa-project || true"
+                sh "podman pod create --name qa-project"
+
+                // todo credentials to jenkins creds
+                sh "podman run -d --pod qa-project --name qamysql -e MYSQL_DATABASE=technoatom -e MYSQL_USER=test_qa -e MYSQL_PASSWORD=qa_test -e MYSQL_ROOT_PASSWORD=root -v qa-mysql-volume:/var/lib/mysql mysql"
+                sh "podman run -d --pod qa-project --name myapp myapp"
+                sh "podman run -d --pod qa-project --name vkapi -e VK_API_TOKEN=$VK_API_TOKEN vkapi"
             }
         }
 
@@ -23,10 +43,8 @@ pipeline {
             environment {
                 VK_API_TOKEN = credentials('27a5cd39-a350-4721-b2da-9d8ecaea8fcc')
             }
-
             steps {
                 dir('project') {
-                    sh "poetry install"
                     sh "PYTHONPATH=vkapi poetry run python -m pytest -s --alluredir=allure-results"
                 }
             }
@@ -34,8 +52,8 @@ pipeline {
 
         stage("Cleanup") {
             steps {
-                sh "podman pod stop qa_app_tests || true"
-                sh "podman pod rm qa_app_tests || true"
+                sh "podman pod stop qa-project"
+                sh "podman pod rm qa-project"
             }
         }
     }

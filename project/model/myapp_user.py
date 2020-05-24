@@ -55,7 +55,7 @@ class MysqlOrmConnection:
                                                                           host=self.host,
                                                                           port=self.port,
                                                                           db=self.db_name),
-            encoding='UTF8MB4'
+            encoding='utf8'
         )
 
         return engine.connect()

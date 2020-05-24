@@ -27,6 +27,14 @@ class TestAPIBase:
         self.logger = logger
 
 
+class TestAPILogin(TestAPIBase):
+
+    def test_login(self):
+        """
+        Проверяем, можно ли залогиниться пользователем и обновляет ля ли access_time
+        """
+        pass
+
 class TestAPICreateUser(TestAPIBase):
 
     @pytest.mark.parametrize('username, password, email', [
@@ -117,7 +125,7 @@ class TestAPICreateUser(TestAPIBase):
 
 class TestAPIDelUser(TestAPIBase):
 
-    def test_happy_case(self, regular_user, myqsl_session):
+    def test_happy_case(self, regular_user, mysql_session):
         self.logger.debug(f"regular_user {regular_user}")
 
         username = regular_user.username
@@ -125,49 +133,57 @@ class TestAPIDelUser(TestAPIBase):
         assert resp.status_code == 204
 
         user = MysqlOrmConnection().session.query(User).filter_by(username=username).first()
+
         self.logger.debug(f'user from db: {user}')
         assert user is None
 
-    def test_user_not_exists(self, myqsl_session, username):
+    def test_user_not_exists(self, mysql_session, username):
         """
         Удаление несуществующего пользователя
         """
-        user = myqsl_session.query(User).filter_by(username=username).first()
+        user = mysql_session.query(User).filter_by(username=username).first()
         if user is not None:
-            myqsl_session.delete(user)
+            mysql_session.delete(user)
 
         resp = self.myapp_client.delete_user(username)
         assert resp.status_code == 404
 
-    def test_too_long_username(self, myqsl_session):
+    def test_too_long_username(self, long_username):
         """
         Проверка ограничений на кол-во символов в нике пользователя
         """
-
-        long_username = fake.lexify('?'*17)
         resp = self.myapp_client.delete_user(long_username)
         assert resp.status_code == 400
 
-        user = MysqlOrmConnection().session.query(User).filter_by(username=long_username).first()
-        self.logger.debug(f'user from db: {user}')
-        assert user is None
-
 
 class TestAPIBlockUser(TestAPIBase):
-    pass
 
-    # resp = self.myapp_client.block_user(username)
+    def test_too_long_username(self, long_username):
+        resp = self.myapp_client.block_user(long_username)
+        assert resp.status_code == 400
 
+    def test_block(self, mysql_session, regular_user):
+        regular_user.active
+        pass
 
 class TestAPIUnBlockUser(TestAPIBase):
-    pass
 
-    # resp = self.myapp_client.unblock_user(username)
+    def test_too_long_username(self, long_username):
+        resp = self.myapp_client.unblock_user(long_username)
+        assert resp.status_code == 400
 
+    def test_unblock(self, mysql_session, regular_user):
+        pass
 
 
 class TestAPIStatus(TestAPIBase):
-    pass
-    # resp = self.myapp_client.status()
+
+    def test_status(self):
+        """
+        Проверка работоспособности приложения
+        """
+        resp = self.myapp_client.status()
+        assert resp.status_code == 200
+        assert resp.json() == {"status":"ok"}
 
 

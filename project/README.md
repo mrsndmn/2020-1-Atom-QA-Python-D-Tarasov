@@ -40,6 +40,8 @@ podman exec qamyapp /app/myapp --config=/etc/myapp.conf --setup
 
 # Тестирование API
 
+Есть места, в которых вместо 201, отдается 210. Похоже на опечатку.
+
 # Баги:
 
 ---

@@ -40,3 +40,15 @@ def _regular_user(myqsl_session):
     myqsl_session.commit()
 
     return user
+
+@pytest.fixture()
+def username():
+    return fake.user_name()
+
+@pytest.fixture()
+def password():
+    return fake.user_name()
+
+@pytest.fixture()
+def email():
+    return fake.ascii_email()

@@ -13,6 +13,12 @@ from myapp.client import MyAppClient
 # null в базе там, где, возможно, это не предусмотрели
 # обновление последнего захода пользвоателя
 
+import faker
+from faker.providers import internet
+
+fake = faker.Faker()
+
+
 @pytest.mark.api
 class TestAPI:
 
@@ -23,25 +29,66 @@ class TestAPI:
 
     @pytest.mark.parametrize('username, password, email', [
         ('testqa', 'qatest', 'mrsndmn@example.com'),
-        ('x' * 16, 'y'*255, 'z'*(52) + '@example.com'), # граничный случай
+        (fake.lexify('?'*16), fake.lexify('?'*255), fake.lexify('?'*52) + '@example.com'),  # граничный случай
     ])
-    def test_positive_create_user(self, username, password, email):
+    def test_create_user_positive(self, username, password, email):
         '''
         Позитивные кейсы по созданию пользователей.
         '''
         resp = self.myapp_client.add_user(username, password, email)
         assert resp.status_code in [200, 304]
 
-    @pytest.mark.parametrize('username, password, email, desc', [
-        ('', '', '', 'Все поля пустые'),
-        ('username', 'password', '@', 'email невалидный'),
-        ('x' * 17, 'y'*5, 'example@example.com', 'Слишком длинный логин'),
-        ('x' * 5, 'y'*256, 'example@example.com', 'Слишком длинный пароль'),
-        ('x' * 5, 'y'*5, 'z'*(53) + '@example.com', 'Слишком длинная почта'),
+    @pytest.mark.parametrize('badpassword, desc', [
+        (fake.lexify('?'*256), 'Слишком длинный пароль'),
+        ('еёюя', 'Кириллица запрещена'),
+        ('1', 'Слишком короткий пароль'),
     ])
-    def test_negative_create_user(self, username, password, email, desc):
+    def test_create_user_bad_username(self, username, badpassword, email, desc):
         '''
         Негативные кейсы по созданию пользователей.
         '''
-        resp = self.myapp_client.add_user(username, password, email)
+        resp = self.myapp_client.add_user(username, badpassword, email)
         assert resp.status_code == 400, desc
+
+    @pytest.mark.parametrize('badusername, desc', [
+        (fake.lexify('?'*256), 'Слишком длинный логин'),
+        (str(fake.random_number()), 'Ник, состоящий только из цифр должен быть запрещен (нужно для корректной работы vkapi)'),
+        ('ёёёёёёеёюя', 'Кириллица запрещена'),
+        ('1', 'Слишком короткий логин'),
+    ])
+    def test_create_user_bad_username(self, badusername, password, email, desc):
+        '''
+        Негативные кейсы по созданию пользователей.
+        '''
+        resp = self.myapp_client.add_user(badusername, password, email)
+        assert resp.status_code == 400, desc
+
+
+    @pytest.mark.parametrize('bademail, desc', [
+        ('@', 'Невалидный email'),
+        (fake.lexify(text='?'*53)+'@example.com' , 'Слишком длинная почта'),
+    ])
+    def test_create_user_bad_email(self, username, password, bademail, desc):
+        '''
+        Кейсы с невалидой почтой
+        '''
+        resp = self.myapp_client.add_user(username, password, bademail)
+        assert resp.status_code == 400, desc
+
+    def test_create_user_duplicate(self, username, password, email):
+        resp = self.myapp_client.add_user(username, password, email)
+        assert resp.status_code == 201
+        resp = self.myapp_client.add_user(username, password, email)
+        assert resp.status_code == 400
+
+    def test_create_user_unauthorized(self, username, password, email):
+
+        old_session = self.myapp_client.req_session
+        self.myapp_client.req_session = requests.Session()
+
+        try:
+            resp = self.myapp_client.add_user(username, password, email)
+            assert resp.status_code == 401
+        finally:
+            self.myapp_client.req_session = old_session
+

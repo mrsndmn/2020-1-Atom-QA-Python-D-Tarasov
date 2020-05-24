@@ -17,9 +17,6 @@ pipeline {
                 sh "podman build -t vkapi --file project/dockerfiles/vkapi/Dockerfile project/vkapi"
                 sh "podman build -t myapp --file project/dockerfiles/myapp/Dockerfile project/dockerfiles/myapp"
                 sh "podman build -t myapp_test --file project/dockerfiles/myapp_test/Dockerfile project"
-                dir('project') {
-                    sh "poetry install"
-                }
             }
         }
 
@@ -53,21 +50,16 @@ pipeline {
             steps {
                 dir('project') {
                     sh "podman run --pod qa-project --name myapp_test --env MYSQL_HOST=$MYSQL_HOST --env MYSQL_PORT=$MYSQL_PORT --env MYSQL_USER=$MYSQL_USER --env MYSQL_PASSWORD=$MYSQL_PASSWORD --env MYSQL_DB=$MYSQL_DB --env MYAPP_URL=$MYAPP_URL --env VK_API_TOKEN=$VK_API_TOKEN myapp_test"
-                    sh "podman cp myapp_test:/allure-results $WORKSPACE/allure-results"
                 }
-            }
-        }
-
-        stage("Cleanup") {
-            steps {
-                sh "podman pod stop qa-project"
-                sh "podman pod rm qa-project"
             }
         }
     }
 
     post {
         always {
+            sh "podman cp myapp_test:/allure-results $WORKSPACE/allure-results || true"
+            sh "podman pod stop qa-project"
+            sh "podman pod rm qa-project"
             allure([
                 reportBuildPolicy: 'ALWAYS',
                 results: [[path: '$WORKSPACE/allure-results']]

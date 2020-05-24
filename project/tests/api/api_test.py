@@ -27,16 +27,16 @@ class TestAPI:
         self.myapp_client: MyAppClient = request.getfixturevalue('api_client')
         self.myapp_client.logger = logger
 
+
     @pytest.mark.parametrize('username, password, email', [
-        ('testqa', 'qatest', 'mrsndmn@example.com'),
         (fake.lexify('?'*16), fake.lexify('?'*255), fake.lexify('?'*52) + '@example.com'),  # граничный случай
     ])
-    def test_create_user_positive(self, username, password, email):
+    def test_create_user_positive_boundary(self, username, password, email):
         '''
-        Позитивные кейсы по созданию пользователей.
+        Логин, пароль и почта максимально допустимой длинны
         '''
         resp = self.myapp_client.add_user(username, password, email)
-        assert resp.status_code in [200, 304]
+        assert resp.status_code == 201
 
     @pytest.mark.parametrize('badpassword, desc', [
         (fake.lexify('?'*256), 'Слишком длинный пароль'),
@@ -76,10 +76,12 @@ class TestAPI:
         assert resp.status_code == 400, desc
 
     def test_create_user_duplicate(self, username, password, email):
+        """
+        При повторном создании пользователя должна возвращаться ошибка 304, already exists
+        """
         resp = self.myapp_client.add_user(username, password, email)
-        assert resp.status_code == 201
         resp = self.myapp_client.add_user(username, password, email)
-        assert resp.status_code == 400
+        assert resp.status_code == 304
 
     def test_create_user_unauthorized(self, username, password, email):
 

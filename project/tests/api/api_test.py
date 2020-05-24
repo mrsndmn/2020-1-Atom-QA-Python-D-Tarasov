@@ -18,10 +18,13 @@ fake = faker.Faker()
 
 @pytest.mark.api
 class TestAPIBase:
+    myapp_client: MyAppClient
+
     @pytest.fixture(scope='function', autouse=True)
     def setup(self, request, logger):
         self.myapp_client: MyAppClient = request.getfixturevalue('api_client')
         self.myapp_client.logger = logger
+        self.logger = logger
 
 
 class TestAPICreateUser(TestAPIBase):
@@ -112,3 +115,15 @@ class TestAPICreateUser(TestAPIBase):
         finally:
             self.myapp_client.req_session = old_session
 
+class TestAPIDelUser(TestAPIBase):
+
+    def test_happy_case(self, regular_user, myqsl_session):
+        self.logger.debug(f"regular_user {regular_user}")
+
+        username = regular_user.username
+        resp = self.myapp_client.delete_user(username)
+        assert resp.status_code == 204
+
+        user = myqsl_session.query(User).filter_by(username=username).first()
+        self.logger.debug(f'user from db: {user}')
+        assert user is None

@@ -19,7 +19,7 @@ def api_client(myqsl_session):
     user = _regular_user(myqsl_session)
     return MyAppClient(os.getenv('MYAPP_URL', 'http://localhost:8001'), user=user.username, password=user.password)
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='function')
 def regular_user(myqsl_session):
     return _regular_user(myqsl_session)
 

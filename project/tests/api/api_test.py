@@ -2,7 +2,7 @@ import pytest
 import requests
 import os
 
-from model.myapp_user import User
+from model.myapp_user import User, MysqlOrmConnection
 from myapp.client import MyAppClient
 
 # длинное пользовательское имя
@@ -124,6 +124,6 @@ class TestAPIDelUser(TestAPIBase):
         resp = self.myapp_client.delete_user(username)
         assert resp.status_code == 204
 
-        user = myqsl_session.query(User).filter_by(username=username).first()
+        user = MysqlOrmConnection().session.query(User).filter_by(username=username).first()
         self.logger.debug(f'user from db: {user}')
         assert user is None

@@ -1,6 +1,7 @@
 import requests
 from urllib.parse import urljoin
 
+
 class MyAppClient:
     def __init__(self, base_url, user="kirill", password="kirill_pass", logger=None):
         self.base_url = base_url

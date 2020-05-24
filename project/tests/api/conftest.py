@@ -6,27 +6,24 @@ from myapp.client import MyAppClient
 import faker
 from faker.providers import internet
 
-@pytest.fixture(scope='session', autouse=True)
-def faker_session_locale():
-    return ['en_US']
-
-@pytest.fixture(scope='session')
+@pytest.fixture
 def myqsl_session():
     return MysqlOrmConnection().session
 
 @pytest.fixture(scope='session')
-def api_client(myqsl_session):
+def api_client(request):
+    myqsl_session = MysqlOrmConnection().session
     user = _regular_user(myqsl_session)
     return MyAppClient(os.getenv('MYAPP_URL', 'http://localhost:8001'), user=user.username, password=user.password)
 
-@pytest.fixture(scope='function')
+@pytest.fixture()
 def regular_user(myqsl_session):
     return _regular_user(myqsl_session)
 
 fake = faker.Faker()
 
 def _regular_user(myqsl_session):
-    username = fake.user_name()
+    username = fake.user_name()[:10]
     password = username
     email = fake.ascii_email()
 
@@ -41,9 +38,11 @@ def _regular_user(myqsl_session):
 
     return user
 
+
+# todo вообще говоря, эти фиксутры не ограничены по длинне, а должны были быть
 @pytest.fixture()
 def username():
-    return fake.user_name()
+    return fake.user_name()[:10]
 
 @pytest.fixture()
 def password():

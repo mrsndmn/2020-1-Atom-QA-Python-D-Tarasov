@@ -11,12 +11,6 @@ class LoginPage(BasePage):
         self.click(self.locators.LOGIN_BUTTON)
         return
 
-    def test_bad_login(self, driver, login_page, logger):
-        login_page.login("no_such_email@example.com", "no_such_password")
-        logger.debug(f"driver.current_url {driver.current_url}")
-
-        error_desc = self.find(self.locators.ERROR_FIELD, timeout=2)
-        
-        error_desc
-
-        assert 'error_code' in driver.current_url
+    def login_error(self):
+        error_desc = self.find(self.locators.ERROR_FIELD, timeout=10)
+        return error_desc.text

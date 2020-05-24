@@ -27,7 +27,7 @@ podman run -d --pod qa-project --name vkapi -e VK_API_TOKEN=$VK_API_TOKEN vkapi
 
 После того, как все поднялось, можно проинитить базу
 ```
-podman exec qamyapp /app/myapp --config=/etc/myapp.conf --setup
+podman exec myapp /app/myapp --config=/etc/myapp.conf --setup
 ```
 
 # Что показалось странным:

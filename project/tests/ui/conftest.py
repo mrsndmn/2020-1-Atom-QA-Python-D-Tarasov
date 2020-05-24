@@ -1,15 +1,17 @@
 import os
 
 import pytest
+import allure
 
 from selenium import webdriver
 from selenium.webdriver import ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
-from ui.pages.base import BasePage
-from ui.pages.login import LoginPage
+from tests.ui.pages.base import BasePage
+from tests.ui.pages.login import LoginPage
 
+from tests.api.conftest import *
 
 class UsupportedBrowserException(Exception):
     pass
@@ -21,8 +23,8 @@ def base_page(driver):
 
 
 @pytest.fixture(scope='function')
-def login_page(driver):
-    return LoginPage(driver)
+def login_page(driver, logger):
+    return LoginPage(driver, logger)
 
 
 @pytest.fixture(scope='function')
@@ -33,7 +35,7 @@ def logined_driver(driver, login_page):
 
 
 @pytest.fixture(scope='function')
-def driver(config):
+def driver(config, logger):
     browser = config['browser']
     version = config['version']
     chrome_path = config['chrome_path']
@@ -48,11 +50,14 @@ def driver(config):
             'acceptInsecureCerts': True,
             'browserName': browser,
             'version': version,
+            "enableVideo": True
         }
 
         driver = webdriver.Remote(command_executor='http://' + selenoid + '/wd/hub/',
                                     options=options,
                                     desired_capabilities=capabilities)
+
+        allure.link('http://{selenoid}/video/{driver.session_id}.mp4', name='Browser video')
 
     else:
         if browser == 'chrome':

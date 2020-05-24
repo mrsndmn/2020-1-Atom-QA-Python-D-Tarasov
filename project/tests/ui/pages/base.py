@@ -10,8 +10,9 @@ RETRY_COUNT = 3
 
 class BasePage:
 
-    def __init__(self, driver):
+    def __init__(self, driver, logger):
         self.driver = driver
+        self.logger = logger
 
     def find(self, locator, timeout=None) -> WebElement:
         return self.wait(timeout).until(EC.presence_of_element_located(locator))
@@ -21,7 +22,7 @@ class BasePage:
         self.driver.execute_script(script)
 
     @allure.step('Clicking on {locator}...')
-    def click(self, locator, timeout=20):
+    def click(self, locator, timeout=5):
         for i in range(RETRY_COUNT):
             try:
                 self.find(locator)
@@ -34,7 +35,7 @@ class BasePage:
                     pass
         raise
 
-    def fill_input(self, locator, text, timeout=20, no_clear=False):
+    def fill_input(self, locator, text, timeout=5, no_clear=False):
         input_field = self.find(locator, timeout=timeout)
         if not no_clear:
             input_field.clear()

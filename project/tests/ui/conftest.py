@@ -58,7 +58,7 @@ def driver(config, logger):
                                     desired_capabilities=capabilities)
 
         logger.info(f"video url: http://{selenoid}/video/{driver.session_id}.mp4")
-        allure.link(f'http://{selenoid}/video/{driver.session_id}.mp4', name='Browser video')
+        allure.dynamic.link(f'http://{selenoid}/video/{driver.session_id}.mp4', name='Browser video')
 
     else:
         if browser == 'chrome':

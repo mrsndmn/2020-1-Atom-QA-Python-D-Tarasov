@@ -57,6 +57,7 @@ def driver(config, logger):
                                     options=options,
                                     desired_capabilities=capabilities)
 
+        logger.info("video url: http://{selenoid}/video/{driver.session_id}.mp4")
         allure.link('http://{selenoid}/video/{driver.session_id}.mp4', name='Browser video')
 
     else:

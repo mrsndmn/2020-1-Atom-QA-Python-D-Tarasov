@@ -14,10 +14,10 @@ class TestLogin(BaseCase):
 
         # todo check regular_user updated, active
 
-    @pytest.mark.parametrize("username", ['1', '12345'])
+    @pytest.mark.parametrize("username", ['1', '12345', '1'*17])
     def test_short_username(self, login_page, username):
         """
-        Имя пользователя слишком короткое
+        Имя пользователя слишком короткое/длинное
         """
         login_page.login(username, '1')
 

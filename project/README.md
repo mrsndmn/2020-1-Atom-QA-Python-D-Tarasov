@@ -49,18 +49,14 @@ podman exec myapp /app/myapp --config=/etc/myapp.conf --setup
 
 # Баги:
 
----
+* При регистрации пользователя с почтой, на которую уже есть аккаунт, возвращается 500
+* Перепутаны коды ответов 210 вместо 201
+* можно положить zero-byte в базу. С питончиком это явно не проэксплуатировать, но если бы наш сервис общался с каким-нибдудь сишным сервисом,
+это могло бы где-то выстрелить
+* Местами в апишке нет валидации на максимальную длинну поля
+* Пользовавтель может заблокировать сам себя
 
-
-
-#### Expected Behavior:
-
-#### Current Behavior:
-
-#### Possible Solution
-
-#### Steps to Reproduce
-
-1.
-
-### Got
+```
+echo -ne 'username=mramirez\x0012312123&password=mramirez&submit=Login' > /tmp/login 
+curl 'http://localhost:8001/login' -H 'Content-Type: application/x-www-form-urlencoded' --data-binary '@/tmp/login' -v 1>/dev/null
+```

@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
 from tests.ui.pages.login import LoginPage
-from tests.ui.pages.registration import RegistretionPage
+from tests.ui.pages.registration import RegistrationPage
 from tests.ui.pages.welcome import WellcomePage
 
 from tests.api.conftest import *
@@ -28,7 +28,7 @@ def login_page(driver, logger, config):
 def registration_page(driver, logger, config):
     url = config['url'] + '/reg'
     driver.get(url)
-    return RegistretionPage(driver, logger)
+    return RegistrationPage(driver, logger)
 
 @pytest.fixture(scope='function')
 def wellcome_page(driver, logger, config):

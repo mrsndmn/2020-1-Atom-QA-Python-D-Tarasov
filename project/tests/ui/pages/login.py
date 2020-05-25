@@ -1,6 +1,7 @@
 
 from tests.ui.pages.base import BasePage
 from tests.ui.locators.locators import LoginPageLocators
+from tests.ui.pages.registration import RegistrationPage
 
 class LoginPage(BasePage):
     locators = LoginPageLocators()
@@ -17,5 +18,5 @@ class LoginPage(BasePage):
 
     def move_to_regiter(self):
         self.click(self.locators.REGISTER_BUTTON)
-        return RegistretionPage(self.driver, self.logger)
+        return RegistrationPage(self.driver, self.logger)
 

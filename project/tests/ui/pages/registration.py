@@ -3,7 +3,7 @@ from tests.ui.pages.base import BasePage
 from tests.ui.locators.locators import RegisterPageLocators
 import json
 
-class RegistretionPage(BasePage):
+class RegistrationPage(BasePage):
     locators = RegisterPageLocators
 
     def register(self, username, email, password, confirm_password=None, accept_sdet_checkbox=True):

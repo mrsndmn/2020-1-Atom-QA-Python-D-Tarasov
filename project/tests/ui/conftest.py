@@ -57,10 +57,12 @@ def driver(config, logger):
                                     options=options,
                                     desired_capabilities=capabilities)
 
-        logger.info(f"video url: http://{selenoid}/video/{driver.session_id}.mp4")
-        allure.dynamic.link(f'http://{selenoid}/video/{driver.session_id}.mp4', name='Browser video')
+        allure.dynamic.link(f'http://{selenoid}/video/{driver.session_id}.mp4', name='Browser record')
 
     else:
+        if version is None:
+            version = 'latest'
+
         if browser == 'chrome':
             options = ChromeOptions()
             options.binary_location = chrome_path

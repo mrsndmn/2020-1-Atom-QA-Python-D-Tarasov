@@ -102,6 +102,12 @@ class TestRegistration(BaseCase):
         err = registration_page.error()
         assert err == {'username': ['Incorrect username length'], 'email': ['Incorrect email length', 'Invalid email address'], 'password': ['Passwords must match']}
 
+    def test_already_exists_user(self, registration_page, regular_user):
+        registration_page.register(regular_user.username, regular_user.email, regular_user.password)
+        time.sleep(0.5)
+        err = registration_page.error()
+        assert err == 'User already exist'
+
     def test_login_page(self, registration_page):
         """
         Кнопка перехода на страницу логина должна работать

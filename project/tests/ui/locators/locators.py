@@ -8,18 +8,21 @@ class LoginPageLocators():
 
     ERROR_FIELD = (By.ID, 'flash')
 
+    REGISTER_BUTTON = (By.XPATH, '//*[text()="Create an account"]')
+
 class RegisterPageLocators():
-    pass
+    USERNAME_INPUT = (By.ID, 'username')
+    EMAIL_INPUT = (By.ID, 'email')
+    PASSWORD_INPUT = (By.ID, 'password')
+    CONFIRM_PASSWORD_INPUT = (By.ID, 'confirm')
+    ACCEPT_SDET_CHECKBOX = (By.ID, 'term')
 
-class MainPageLocators():
-    SOCIAL_ACTION_CONVERSION_BUTTON = (By.XPATH, "//div[contains(text(), 'Действия в социальных сетях')]")
-    LINK_INPUT = (By.XPATH, '//input[@placeholder="Введите ссылку"]')
-    BANNER_TITLE_INPUT = (By.XPATH, '//input[@data-gtm-id="banner_form_title"]')
+    REGISTER_BUTTON = (By.ID, 'submit')
+    ERROR_FIELD = (By.ID, 'flash')
 
-    BANNER_DESCRIPTION_INPUT = (By.XPATH, '//textarea[@data-gtm-id="banner_form_text"]')
+    LOGIN_BUTTON = (By.XPATH, '//*[text()="Log in"]')
 
-    BANNER_LITTLE_IMG_INPUT = (By.XPATH, '//input[@type="file" and @data-gtm-id="load_image_btn_256_256"]')
-    BANNER_BIG_IMG_INPUT = (By.XPATH, '//input[@type="file" and @data-gtm-id="load_image_btn_1080_607"]')
-    BANNER_IMG_SUBMIT_INPUT = (By.XPATH, '//input[@type="submit"]')
 
-    SUBMIT_NEW_CAMPAIGN = (By.XPATH, '//div[@class="footer"]//button[@data-class-name="Submit"]')
+class WelcomePageLocators():
+    LOGIN_NAME = (By.ID, 'login-name')
+    LOGOUT_BUTTON = (By.ID, 'logout')

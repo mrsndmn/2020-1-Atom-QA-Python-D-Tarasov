@@ -8,8 +8,9 @@ from selenium.webdriver import ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
-from tests.ui.pages.base import BasePage
 from tests.ui.pages.login import LoginPage
+from tests.ui.pages.registration import RegistretionPage
+from tests.ui.pages.welcome import WellcomePage
 
 from tests.api.conftest import *
 
@@ -18,20 +19,23 @@ class UsupportedBrowserException(Exception):
 
 
 @pytest.fixture(scope='function')
-def base_page(driver):
-    return BasePage(driver)
-
-
-@pytest.fixture(scope='function')
-def login_page(driver, logger):
+def login_page(driver, logger, config):
+    url = config['url'] + '/login'
+    driver.get(url)
     return LoginPage(driver, logger)
 
+@pytest.fixture(scope='function')
+def registration_page(driver, logger, config):
+    url = config['url'] + '/reg'
+    driver.get(url)
+    return RegistretionPage(driver, logger)
 
 @pytest.fixture(scope='function')
-def logined_driver(driver, login_page):
-    login_page.login(os.getenv("MYTARGET_USER"), os.getenv("MYTARGET_PASSWORD"))
-    driver = login_page.driver
-    return driver
+def wellcome_page(driver, logger, config):
+    url = config['url'] + '/welcome/'
+    driver.get(url)
+    return WellcomePage(driver, logger)
+
 
 
 @pytest.fixture(scope='function')
@@ -39,7 +43,6 @@ def driver(config, logger):
     browser = config['browser']
     version = config['version']
     chrome_path = config['chrome_path']
-    url = config['url']
     selenoid = config['selenoid']
 
 
@@ -75,7 +78,7 @@ def driver(config, logger):
         else:
             raise UsupportedBrowserException(f'Usupported browser: "{browser}"')
 
-    driver.get(url)
+    
     yield driver
     driver.close()
 

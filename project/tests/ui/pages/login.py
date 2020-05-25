@@ -14,3 +14,8 @@ class LoginPage(BasePage):
     def login_error(self):
         error_desc = self.find(self.locators.ERROR_FIELD, timeout=10)
         return error_desc.text
+
+    def move_to_regiter(self):
+        self.click(self.locators.REGISTER_BUTTON)
+        return RegistretionPage(self.driver, self.logger)
+

@@ -3,6 +3,7 @@ import requests
 from model.myapp_user import User, MysqlOrmConnection
 from myapp.client import MyAppClient
 
+from tests.api.api_test import TestAPIBase
 
 class TestAPIBlockUser(TestAPIBase):
 

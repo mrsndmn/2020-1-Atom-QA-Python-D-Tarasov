@@ -31,10 +31,8 @@ def registration_page(driver, logger, config):
     return RegistrationPage(driver, logger)
 
 @pytest.fixture(scope='function')
-def wellcome_page(driver, logger, config):
-    url = config['url'] + '/welcome/'
-    driver.get(url)
-    return WellcomePage(driver, logger)
+def welcome_page(login_page, regular_user):
+    return login_page.login(regular_user.username, regular_user.password)
 
 
 

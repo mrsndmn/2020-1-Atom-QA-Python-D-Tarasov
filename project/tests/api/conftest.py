@@ -19,6 +19,7 @@ def api_client(request):
 
 @pytest.fixture()
 def regular_user(mysql_session):
+    # todo не меньше 5 исмволов, не больше 16
     return _regular_user(mysql_session)
 
 fake = faker.Faker()
@@ -30,7 +31,7 @@ def _regular_user(mysql_session):
 
     user = mysql_session.query(User).filter_by(username=username).first()
     if user is not None:
-        mysql_session.session.delete(user)
+        mysql_session.delete(user)
 
     user = User(username=username, password=password, email=email)
 

@@ -102,8 +102,30 @@ class TestRegistration(BaseCase):
         err = registration_page.error()
         assert err == {'username': ['Incorrect username length'], 'email': ['Incorrect email length', 'Invalid email address'], 'password': ['Passwords must match']}
 
-    def test_already_exists_user(self, registration_page, regular_user):
+
+    def test_already_exists_user_same_username_email(self, registration_page, regular_user):
+        """
+        Пользователь с таким логином и почтой уже был зарегистрирован
+        """
         registration_page.register(regular_user.username, regular_user.email, regular_user.password)
+        time.sleep(0.5)
+        err = registration_page.error()
+        assert err == 'User already exist'
+
+    def test_already_exists_user_email(self, registration_page, regular_user):
+        """
+        Пользователь с таким логином и почтой уже был зарегистрирован
+        """
+        registration_page.register(regular_user.username[1:], regular_user.email, regular_user.password)
+        time.sleep(0.5)
+        err = registration_page.error()
+        assert err == 'User already exist'
+
+    def test_already_exists_same_username(self, registration_page, regular_user):
+        """
+        Пользователь с таким логином уже был зарегистрирован
+        """
+        registration_page.register(regular_user.username, regular_user.email[1:], regular_user.password)
         time.sleep(0.5)
         err = registration_page.error()
         assert err == 'User already exist'

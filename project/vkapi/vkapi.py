@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import request, make_response
 
 import vk_api
 import os
@@ -20,15 +21,25 @@ app = Flask(__name__)
 host = '0.0.0.0'
 port = os.getenv("PORT", 8000)
 
-@app.route('/vk_id/<shortname>')
+
+mock_override = dict()
+
+@app.route('/vk_id/<shortname>', methods=['GET', 'PUT'])
 def get_user_id_by_shortname(shortname: str):
-    if re.match(r'^\d+$', shortname):
-        # todo return 400
+
+    if request.method == 'PUT':
+        mock_override[shortname] = request.form.get('data')
         return {}
+
+    if shortname in mock_override:
+        return { "vk_id": mock_override[shortname] }
+
+    if re.match(r'^\d+$', shortname):
+        return make_response("Shortname can't be a digits", 400)
 
     # в id должны быть только буквы, цифры и "_"
     if not re.match(r'^[a-zA-Z0-9_]+$', shortname):
-        return {}
+        return make_response("Unallowed symbol in shortname", 400)
 
     try:
         res = vk_session.method('users.get', values={"user_ids": shortname})
@@ -38,11 +49,10 @@ def get_user_id_by_shortname(shortname: str):
 
         return
     except Exception as e:
-        print("Can't get user id by shortname:", e)
+        return make_response("Internal server error", 500)
 
     return {}
 
-# todo fake users_ids
 
 if __name__ == '__main__':
     app.run(host=host, port=port)

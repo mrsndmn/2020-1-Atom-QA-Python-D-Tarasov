@@ -10,6 +10,7 @@ class LoginPageLocators():
 
     REGISTER_BUTTON = (By.XPATH, '//*[text()="Create an account"]')
 
+
 class RegisterPageLocators():
     USERNAME_INPUT = (By.ID, 'username')
     EMAIL_INPUT = (By.ID, 'email')

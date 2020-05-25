@@ -43,6 +43,7 @@ def _regular_user(mysql_session):
 
 @pytest.fixture()
 def username():
+    # todo не меньше 5 символов должно быть
     return fake.user_name()[:10]
 
 @pytest.fixture
@@ -55,4 +56,5 @@ def password():
 
 @pytest.fixture()
 def email():
+    # todo проверить ограничения
     return fake.ascii_email()

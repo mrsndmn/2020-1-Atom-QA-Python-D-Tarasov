@@ -14,4 +14,4 @@ COPY myapp /tests/myapp
 
 COPY tests /tests/tests
 
-ENTRYPOINT PYTHONPATH=. python -m pytest -s --alluredir=/allure-results
+ENTRYPOINT PYTHONPATH=. python -m pytest -v -s --alluredir=/allure-results

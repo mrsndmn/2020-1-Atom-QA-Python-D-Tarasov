@@ -1,5 +1,5 @@
 
-import vkapi
+import vkapi.vkapi as vkapi
 import pytest
 
 import sys

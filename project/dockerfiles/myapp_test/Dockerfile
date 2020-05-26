@@ -14,4 +14,4 @@ COPY myapp /tests/myapp
 
 COPY tests /tests/tests
 
-ENTRYPOINT PYTHONPATH=vkapi:. python -m pytest -s --alluredir=/allure-results
+ENTRYPOINT PYTHONPATH=. python -m pytest -s --alluredir=/allure-results

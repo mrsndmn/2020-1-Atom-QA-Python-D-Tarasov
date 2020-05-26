@@ -23,6 +23,7 @@ def regular_user(mysql_session):
     return _regular_user(mysql_session)
 
 fake = faker.Faker()
+faker.Faker.seed(0)
 
 def _regular_user(mysql_session):
     username = fake.user_name()[:10]

@@ -17,6 +17,7 @@ allure-pytest = "^2.8.13"
 testcontainers = {extras = ["mysql"], version = "^3.0.0"}
 selenium = "^3.141.0"
 webdriver_manager = "^2.5.2"
+pytest-xdist = "^1.32.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.2"

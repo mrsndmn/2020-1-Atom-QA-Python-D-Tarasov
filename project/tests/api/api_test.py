@@ -7,8 +7,8 @@ class TestAPIBase:
     myapp_client: MyAppClient
 
     @pytest.fixture(scope='function', autouse=True)
-    def setup(self, request, logger):
-        self.myapp_client: MyAppClient = request.getfixturevalue('api_client')
+    def setup(self, request, logger, api_client):
+        self.myapp_client: MyAppClient = api_client
         self.myapp_client.logger = logger
         self.logger = logger
 

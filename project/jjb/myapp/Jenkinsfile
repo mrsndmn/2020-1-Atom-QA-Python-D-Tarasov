@@ -10,6 +10,10 @@ pipeline {
         timestamps()
     }
 
+    parameters {
+        string(name: 'PYTEST_PARAMS', defaultValue: '', description: 'comand lines for pytest')
+    }
+
     stages {
 
         stage("Build") {
@@ -47,10 +51,12 @@ pipeline {
                 MYSQL_PASSWORD="qa_test"
                 MYSQL_DB="technoatom"
                 MYAPP_URL="http://localhost:8001"
+
+                PYTEST_PARAMS="${params.PYTEST_PARAMS}"
             }
             steps {
                 dir('project') {
-                    sh "podman run --pod qa-project --name myapp_test --env MYSQL_HOST=$MYSQL_HOST --env MYSQL_PORT=$MYSQL_PORT --env MYSQL_USER=$MYSQL_USER --env MYSQL_PASSWORD=$MYSQL_PASSWORD --env MYSQL_DB=$MYSQL_DB --env MYAPP_URL=$MYAPP_URL --env VK_API_TOKEN=$VK_API_TOKEN myapp_test"
+                    sh "podman run --pod qa-project --name myapp_test --env MYSQL_HOST=$MYSQL_HOST --env MYSQL_PORT=$MYSQL_PORT --env MYSQL_USER=$MYSQL_USER --env MYSQL_PASSWORD=$MYSQL_PASSWORD --env MYSQL_DB=$MYSQL_DB --env MYAPP_URL=$MYAPP_URL --env VK_API_TOKEN=$VK_API_TOKEN --env PYTEST_PARAMS=$PYTEST_PARAMS myapp_test"
                 }
             }
         }

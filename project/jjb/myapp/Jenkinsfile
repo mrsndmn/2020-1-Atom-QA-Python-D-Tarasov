@@ -58,6 +58,8 @@ pipeline {
 
     post {
         always {
+            sh "rm -rf $WORKSPACE/allure-results"
+            sh "mkdir $WORKSPACE/allure-results"
             sh "podman cp myapp_test:/allure-results $WORKSPACE/allure-results || true"
             sh "podman pod stop qa-project"
             sh "podman pod rm qa-project"

@@ -7,7 +7,6 @@ from faker.providers import internet
 from tests.api.api_test import TestAPIBase
 
 fake = faker.Faker()
-faker.Faker.seed(0)
 
 
 class TestAPICreateUser(TestAPIBase):

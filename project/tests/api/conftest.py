@@ -26,6 +26,9 @@ fake = faker.Faker()
 
 def _regular_user(mysql_session):
     username = fake.user_name()[:10]
+    if len(username) < 5:
+        username += username
+
     password = username
     email = fake.ascii_email()
 

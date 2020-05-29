@@ -6,3 +6,9 @@ Pipfile
 Pipfile.lock
 .env
 *.out
+*.dockerimage
+.vscode
+.lock
+allure
+allure-results
+project/jjb/jenkins_jobs.ini

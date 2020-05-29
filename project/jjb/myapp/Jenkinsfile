@@ -1,0 +1,78 @@
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent {
+        label 'master'
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+        timestamps()
+    }
+
+    parameters {
+        string(name: 'PYTEST_PARAMS', defaultValue: '-v', description: 'comand lines for pytest')
+    }
+
+    stages {
+
+        stage("Build") {
+            steps {
+                sh "podman build -t vkapi --file project/dockerfiles/vkapi/Dockerfile project/vkapi"
+                sh "podman build -t myapp --file project/dockerfiles/myapp/Dockerfile project/dockerfiles/myapp"
+                sh "podman build -t myapp_test --file project/dockerfiles/myapp_test/Dockerfile project"
+            }
+        }
+
+        stage("Run environment") {
+            environment {
+                VK_API_TOKEN = credentials('27a5cd39-a350-4721-b2da-9d8ecaea8fcc')
+            }
+            steps {
+                // todo different pod name for each run
+                sh "podman pod stop qa-project || true"
+                sh "podman pod rm qa-project || true"
+                sh "podman pod create --name qa-project -p 8001:8001"
+
+                // todo credentials to jenkins creds
+                sh "podman run -d --pod qa-project --name qamysql -e MYSQL_DATABASE=technoatom -e MYSQL_USER=test_qa -e MYSQL_PASSWORD=qa_test -e MYSQL_ROOT_PASSWORD=root -v qa-mysql-volume:/var/lib/mysql mysql"
+                sh "podman run -d --pod qa-project --name myapp myapp"
+                sh "podman exec myapp /app/myapp --config=/etc/myapp.conf --setup || true"
+                sh "podman run -d --pod qa-project --name vkapi -e VK_API_TOKEN=$VK_API_TOKEN vkapi"
+            }
+        }
+
+        stage("Testing") {
+            environment {
+                VK_API_TOKEN = credentials('27a5cd39-a350-4721-b2da-9d8ecaea8fcc')
+                MYSQL_HOST="127.0.0.1"
+                MYSQL_PORT="3306"
+                MYSQL_USER="test_qa"
+                MYSQL_PASSWORD="qa_test"
+                MYSQL_DB="technoatom"
+                MYAPP_URL="http://localhost:8001"
+
+                PYTEST_PARAMS="${params.PYTEST_PARAMS}"
+            }
+            steps {
+                dir('project') {
+                    sh "podman run --pod qa-project --name myapp_test --env MYSQL_HOST=$MYSQL_HOST --env MYSQL_PORT=$MYSQL_PORT --env MYSQL_USER=$MYSQL_USER --env MYSQL_PASSWORD=$MYSQL_PASSWORD --env MYSQL_DB=$MYSQL_DB --env MYAPP_URL=$MYAPP_URL --env VK_API_TOKEN=$VK_API_TOKEN --env PYTEST_PARAMS=\"$PYTEST_PARAMS\" myapp_test"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh "rm -rf $WORKSPACE/allure-results"
+            sh "mkdir $WORKSPACE/allure-results"
+            sh "podman cp myapp_test:/allure-results $WORKSPACE/ || true"
+            sh "podman pod stop qa-project"
+            sh "podman pod rm qa-project"
+            allure([
+                reportBuildPolicy: 'ALWAYS',
+                results: [[path: '$WORKSPACE/allure-results']]
+            ])
+        }
+    }
+}
